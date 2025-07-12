@@ -41,7 +41,7 @@ impl RawRotation {
         self.0.im
     }
 
-    /// The f64 part of this complex number.
+    /// The real part of this complex number.
     #[wasm_bindgen(getter)]
     pub fn re(&self) -> f64 {
         self.0.re

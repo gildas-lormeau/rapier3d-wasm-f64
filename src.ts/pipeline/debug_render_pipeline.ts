@@ -26,9 +26,9 @@ export class DebugRenderBuffers {
      * The color buffer. There is one color per vertex, and each color
      * has four consecutive components (in RGBA format).
      */
-    public colors: Float32Array;
+    public colors: Float64Array;
 
-    constructor(vertices: Float64Array, colors: Float32Array) {
+    constructor(vertices: Float64Array, colors: Float64Array) {
         this.vertices = vertices;
         this.colors = colors;
     }
@@ -43,7 +43,7 @@ export class DebugRenderBuffers {
 export class DebugRenderPipeline {
     raw: RawDebugRenderPipeline;
     public vertices: Float64Array;
-    public colors: Float32Array;
+    public colors: Float64Array;
 
     /**
      * Release the WASM memory occupied by this serialization pipeline.

@@ -6,7 +6,7 @@ use na::DMatrix;
 use na::DVector;
 use na::Unit;
 use rapier::geometry::{Shape, SharedShape, TriMeshFlags};
-use rapier::math::{Isometry, Point, Real, Vector, DIM};
+use rapier::math::{Isometry, Point, Vector, DIM};
 use rapier::parry::query;
 use rapier::parry::query::{Ray, ShapeCastOptions};
 use wasm_bindgen::prelude::*;
@@ -14,11 +14,11 @@ use wasm_bindgen::prelude::*;
 pub trait SharedShapeUtility {
     fn castShape(
         &self,
-        shapePos1: &Isometry<Real>,
-        shapeVel1: &Vector<Real>,
+        shapePos1: &Isometry<f64>,
+        shapeVel1: &Vector<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
-        shapeVel2: &Vector<Real>,
+        shapePos2: &Isometry<f64>,
+        shapeVel2: &Vector<f64>,
         target_distance: f64,
         maxToi: f64,
         stop_at_penetration: bool,
@@ -26,50 +26,50 @@ pub trait SharedShapeUtility {
 
     fn intersectsShape(
         &self,
-        shapePos1: &Isometry<Real>,
+        shapePos1: &Isometry<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
+        shapePos2: &Isometry<f64>,
     ) -> bool;
 
     fn contactShape(
         &self,
-        shapePos1: &Isometry<Real>,
+        shapePos1: &Isometry<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
+        shapePos2: &Isometry<f64>,
         prediction: f64,
     ) -> Option<RawShapeContact>;
 
-    fn containsPoint(&self, shapePos: &Isometry<Real>, point: &Point<Real>) -> bool;
+    fn containsPoint(&self, shapePos: &Isometry<f64>, point: &Point<f64>) -> bool;
 
     fn projectPoint(
         &self,
-        shapePos: &Isometry<Real>,
-        point: &Point<Real>,
+        shapePos: &Isometry<f64>,
+        point: &Point<f64>,
         solid: bool,
     ) -> RawPointProjection;
 
     fn intersectsRay(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
     ) -> bool;
 
     fn castRay(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
         solid: bool,
     ) -> f64;
 
     fn castRayAndGetNormal(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
         solid: bool,
     ) -> Option<RawRayIntersection>;
@@ -79,11 +79,11 @@ pub trait SharedShapeUtility {
 impl SharedShapeUtility for SharedShape {
     fn castShape(
         &self,
-        shapePos1: &Isometry<Real>,
-        shapeVel1: &Vector<Real>,
+        shapePos1: &Isometry<f64>,
+        shapeVel1: &Vector<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
-        shapeVel2: &Vector<Real>,
+        shapePos2: &Isometry<f64>,
+        shapeVel2: &Vector<f64>,
         target_distance: f64,
         maxToi: f64,
         stop_at_penetration: bool,
@@ -109,18 +109,18 @@ impl SharedShapeUtility for SharedShape {
 
     fn intersectsShape(
         &self,
-        shapePos1: &Isometry<Real>,
+        shapePos1: &Isometry<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
+        shapePos2: &Isometry<f64>,
     ) -> bool {
         query::intersection_test(shapePos1, &*self.0, shapePos2, shape2).unwrap_or(false)
     }
 
     fn contactShape(
         &self,
-        shapePos1: &Isometry<Real>,
+        shapePos1: &Isometry<f64>,
         shape2: &dyn Shape,
-        shapePos2: &Isometry<Real>,
+        shapePos2: &Isometry<f64>,
         prediction: f64,
     ) -> Option<RawShapeContact> {
         query::contact(shapePos1, &*self.0, shapePos2, shape2, prediction)
@@ -129,14 +129,14 @@ impl SharedShapeUtility for SharedShape {
             .map(|contact| RawShapeContact { contact })
     }
 
-    fn containsPoint(&self, shapePos: &Isometry<Real>, point: &Point<Real>) -> bool {
+    fn containsPoint(&self, shapePos: &Isometry<f64>, point: &Point<f64>) -> bool {
         self.as_ref().contains_point(shapePos, point)
     }
 
     fn projectPoint(
         &self,
-        shapePos: &Isometry<Real>,
-        point: &Point<Real>,
+        shapePos: &Isometry<f64>,
+        point: &Point<f64>,
         solid: bool,
     ) -> RawPointProjection {
         RawPointProjection(self.as_ref().project_point(shapePos, point, solid))
@@ -144,9 +144,9 @@ impl SharedShapeUtility for SharedShape {
 
     fn intersectsRay(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
     ) -> bool {
         self.as_ref()
@@ -155,9 +155,9 @@ impl SharedShapeUtility for SharedShape {
 
     fn castRay(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
         solid: bool,
     ) -> f64 {
@@ -168,9 +168,9 @@ impl SharedShapeUtility for SharedShape {
 
     fn castRayAndGetNormal(
         &self,
-        shapePos: &Isometry<Real>,
-        rayOrig: Point<Real>,
-        rayDir: Vector<Real>,
+        shapePos: &Isometry<f64>,
+        rayOrig: Point<f64>,
+        rayDir: Vector<f64>,
         maxToi: f64,
         solid: bool,
     ) -> Option<RawRayIntersection> {

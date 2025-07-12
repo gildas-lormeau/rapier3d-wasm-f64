@@ -7,7 +7,7 @@ use crate::math::{RawRotation, RawVector};
 use crate::utils::{self, FlatHandle};
 use rapier::dynamics::MassProperties;
 use rapier::geometry::{ActiveCollisionTypes, ShapeType};
-use rapier::math::{Isometry, Point, Real, Vector};
+use rapier::math::{Isometry, Point, Vector};
 use rapier::parry::query;
 use rapier::parry::query::ShapeCastOptions;
 use rapier::pipeline::{ActiveEvents, ActiveHooks};
@@ -205,7 +205,7 @@ impl RawColliderSet {
     }
 
     /// Set the radius of this collider if it is a ball, capsule, cylinder, or cone shape.
-    pub fn coSetRadius(&mut self, handle: FlatHandle, newRadius: Real) {
+    pub fn coSetRadius(&mut self, handle: FlatHandle, newRadius: f64) {
         self.map_mut(handle, |co| match co.shape().shape_type() {
             ShapeType::Ball => co.shape_mut().as_ball_mut().map(|b| b.radius = newRadius),
             ShapeType::Capsule => co
@@ -246,7 +246,7 @@ impl RawColliderSet {
     }
 
     /// Set the half height of this collider if it is a capsule, cylinder, or cone shape.
-    pub fn coSetHalfHeight(&mut self, handle: FlatHandle, newHalfheight: Real) {
+    pub fn coSetHalfHeight(&mut self, handle: FlatHandle, newHalfheight: f64) {
         self.map_mut(handle, |co| match co.shape().shape_type() {
             ShapeType::Capsule => {
                 let point = Point::from(Vector::y() * newHalfheight);
@@ -298,7 +298,7 @@ impl RawColliderSet {
     }
 
     /// Set the radius of the round edges of this collider.
-    pub fn coSetRoundRadius(&mut self, handle: FlatHandle, newBorderRadius: Real) {
+    pub fn coSetRoundRadius(&mut self, handle: FlatHandle, newBorderRadius: f64) {
         self.map_mut(handle, |co| match co.shape().shape_type() {
             ShapeType::RoundCuboid => co
                 .shape_mut()

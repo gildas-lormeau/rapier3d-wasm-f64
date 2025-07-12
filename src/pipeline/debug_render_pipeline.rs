@@ -1,6 +1,6 @@
 use crate::dynamics::{RawImpulseJointSet, RawMultibodyJointSet, RawRigidBodySet};
 use crate::geometry::{RawColliderSet, RawNarrowPhase};
-use js_sys::{Float32Array, Float64Array};
+use js_sys::Float64Array;
 use palette::convert::IntoColorUnclamped;
 use palette::rgb::Rgba;
 use palette::Hsla;
@@ -15,7 +15,7 @@ use wasm_bindgen::prelude::*;
 pub struct RawDebugRenderPipeline {
     pub(crate) raw: DebugRenderPipeline,
     vertices: Vec<f64>,
-    colors: Vec<f32>,
+    colors: Vec<f64>,
 }
 
 #[wasm_bindgen]
@@ -36,8 +36,8 @@ impl RawDebugRenderPipeline {
         output
     }
 
-    pub fn colors(&self) -> Float32Array {
-        let output = Float32Array::new_with_length(self.colors.len() as u32);
+    pub fn colors(&self) -> Float64Array {
+        let output = Float64Array::new_with_length(self.colors.len() as u32);
         output.copy_from(&self.colors);
         output
     }
@@ -88,7 +88,7 @@ struct CopyToBuffersBackend<'a> {
     bodies: &'a RigidBodySet,
     colliders: &'a ColliderSet,
     vertices: &'a mut Vec<f64>,
-    colors: &'a mut Vec<f32>,
+    colors: &'a mut Vec<f64>,
 }
 
 impl<'a> DebugRenderBackend for CopyToBuffersBackend<'a> {
@@ -147,7 +147,14 @@ impl<'a> DebugRenderBackend for CopyToBuffersBackend<'a> {
         let hsl = Hsla::new(color[0], color[1], color[2], color[3]);
         let rgb: Rgba<f32> = hsl.into_color_unclamped();
         self.colors.extend_from_slice(&[
-            rgb.red, rgb.green, rgb.blue, rgb.alpha, rgb.red, rgb.green, rgb.blue, rgb.alpha,
+            rgb.red as f64,
+            rgb.green as f64,
+            rgb.blue as f64,
+            rgb.alpha as f64,
+            rgb.red as f64,
+            rgb.green as f64,
+            rgb.blue as f64,
+            rgb.alpha as f64,
         ]);
     }
 }
