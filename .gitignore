@@ -19,3 +19,9 @@ builds/*
 
 # compat generated builds
 rapier-compat/builds/
+
+# WASM builds
+!builds/wasm
+
+# WASM builds for f64
+!builds/rapier3d-wasm-simd-f64

@@ -168,9 +168,9 @@ impl RawGenericJoint {
     }
 
     pub fn spring(
-        rest_length: f32,
-        stiffness: f32,
-        damping: f32,
+        rest_length: f64,
+        stiffness: f64,
+        damping: f64,
         anchor1: &RawVector,
         anchor2: &RawVector,
     ) -> Self {
@@ -182,7 +182,7 @@ impl RawGenericJoint {
         )
     }
 
-    pub fn rope(length: f32, anchor1: &RawVector, anchor2: &RawVector) -> Self {
+    pub fn rope(length: f64, anchor1: &RawVector, anchor2: &RawVector) -> Self {
         Self(
             RopeJointBuilder::new(length)
                 .local_anchor1(anchor1.0.into())
@@ -218,8 +218,8 @@ impl RawGenericJoint {
         anchor2: &RawVector,
         axis: &RawVector,
         limitsEnabled: bool,
-        limitsMin: f32,
-        limitsMax: f32,
+        limitsMin: f64,
+        limitsMax: f64,
     ) -> Option<RawGenericJoint> {
         let axis = Unit::try_new(axis.0, 0.0)?;
         let mut joint = PrismaticJointBuilder::new(axis)
@@ -245,8 +245,8 @@ impl RawGenericJoint {
         anchor2: &RawVector,
         axis: &RawVector,
         limitsEnabled: bool,
-        limitsMin: f32,
-        limitsMax: f32,
+        limitsMin: f64,
+        limitsMax: f64,
     ) -> Option<RawGenericJoint> {
         let axis = Unit::try_new(axis.0, 0.0)?;
         let mut joint = PrismaticJointBuilder::new(axis)

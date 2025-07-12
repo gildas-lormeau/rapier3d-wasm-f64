@@ -14,7 +14,7 @@ impl RawRayIntersection {
         self.0.normal.into()
     }
 
-    pub fn time_of_impact(&self) -> f32 {
+    pub fn time_of_impact(&self) -> f64 {
         self.0.time_of_impact
     }
 
@@ -43,7 +43,7 @@ impl RawRayColliderIntersection {
         self.inter.normal.into()
     }
 
-    pub fn time_of_impact(&self) -> f32 {
+    pub fn time_of_impact(&self) -> f64 {
         self.inter.time_of_impact
     }
 
@@ -59,7 +59,7 @@ impl RawRayColliderIntersection {
 #[wasm_bindgen]
 pub struct RawRayColliderHit {
     pub(crate) handle: ColliderHandle,
-    pub(crate) timeOfImpact: f32,
+    pub(crate) timeOfImpact: f64,
 }
 
 #[wasm_bindgen]
@@ -68,7 +68,7 @@ impl RawRayColliderHit {
         utils::flat_handle(self.handle.0)
     }
 
-    pub fn timeOfImpact(&self) -> f32 {
+    pub fn timeOfImpact(&self) -> f64 {
         self.timeOfImpact
     }
 }

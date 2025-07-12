@@ -182,7 +182,7 @@ export class SdpMatrix3 {
     /**
      * Row major list of the upper-triangular part of the symmetric matrix.
      */
-    elements: Float32Array;
+    elements: Float64Array;
 
     /**
      * Matrix element at row 1, column 1.
@@ -247,7 +247,7 @@ export class SdpMatrix3 {
         return this.elements[5];
     }
 
-    constructor(elements: Float32Array) {
+    constructor(elements: Float64Array) {
         this.elements = elements;
     }
 }

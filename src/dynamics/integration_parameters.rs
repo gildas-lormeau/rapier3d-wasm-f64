@@ -13,22 +13,22 @@ impl RawIntegrationParameters {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn dt(&self) -> f32 {
+    pub fn dt(&self) -> f64 {
         self.0.dt
     }
 
     #[wasm_bindgen(getter)]
-    pub fn contact_erp(&self) -> f32 {
+    pub fn contact_erp(&self) -> f64 {
         self.0.contact_erp()
     }
 
     #[wasm_bindgen(getter)]
-    pub fn normalizedAllowedLinearError(&self) -> f32 {
+    pub fn normalizedAllowedLinearError(&self) -> f64 {
         self.0.normalized_allowed_linear_error
     }
 
     #[wasm_bindgen(getter)]
-    pub fn normalizedPredictionDistance(&self) -> f32 {
+    pub fn normalizedPredictionDistance(&self) -> f64 {
         self.0.normalized_prediction_distance
     }
 
@@ -58,27 +58,27 @@ impl RawIntegrationParameters {
     }
 
     #[wasm_bindgen(getter)]
-    pub fn lengthUnit(&self) -> f32 {
+    pub fn lengthUnit(&self) -> f64 {
         self.0.length_unit
     }
 
     #[wasm_bindgen(setter)]
-    pub fn set_dt(&mut self, value: f32) {
+    pub fn set_dt(&mut self, value: f64) {
         self.0.dt = value;
     }
 
     #[wasm_bindgen(setter)]
-    pub fn set_contact_natural_frequency(&mut self, value: f32) {
+    pub fn set_contact_natural_frequency(&mut self, value: f64) {
         self.0.contact_natural_frequency = value
     }
 
     #[wasm_bindgen(setter)]
-    pub fn set_normalizedAllowedLinearError(&mut self, value: f32) {
+    pub fn set_normalizedAllowedLinearError(&mut self, value: f64) {
         self.0.normalized_allowed_linear_error = value
     }
 
     #[wasm_bindgen(setter)]
-    pub fn set_normalizedPredictionDistance(&mut self, value: f32) {
+    pub fn set_normalizedPredictionDistance(&mut self, value: f64) {
         self.0.normalized_prediction_distance = value
     }
 
@@ -105,7 +105,7 @@ impl RawIntegrationParameters {
     }
 
     #[wasm_bindgen(setter)]
-    pub fn set_lengthUnit(&mut self, value: f32) {
+    pub fn set_lengthUnit(&mut self, value: f64) {
         self.0.length_unit = value
     }
 

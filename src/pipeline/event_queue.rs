@@ -41,7 +41,7 @@ impl RawContactForceEvent {
     /// Note that this is **not** the same as the magnitude of `self.total_force`.
     /// Here we are summing the magnitude of all the forces, instead of taking
     /// the magnitude of their sum.
-    pub fn total_force_magnitude(&self) -> f32 {
+    pub fn total_force_magnitude(&self) -> f64 {
         self.0.total_force_magnitude
     }
 
@@ -51,7 +51,7 @@ impl RawContactForceEvent {
     }
 
     /// The magnitude of the largest force at a contact point of this contact pair.
-    pub fn max_force_magnitude(&self) -> f32 {
+    pub fn max_force_magnitude(&self) -> f64 {
         self.0.max_force_magnitude
     }
 }

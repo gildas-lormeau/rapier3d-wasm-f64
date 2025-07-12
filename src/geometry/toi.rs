@@ -10,7 +10,7 @@ pub struct RawShapeCastHit {
 
 #[wasm_bindgen]
 impl RawShapeCastHit {
-    pub fn time_of_impact(&self) -> f32 {
+    pub fn time_of_impact(&self) -> f64 {
         self.hit.time_of_impact
     }
 
@@ -43,7 +43,7 @@ impl RawColliderShapeCastHit {
         utils::flat_handle(self.handle.0)
     }
 
-    pub fn time_of_impact(&self) -> f32 {
+    pub fn time_of_impact(&self) -> f64 {
         self.hit.time_of_impact
     }
 

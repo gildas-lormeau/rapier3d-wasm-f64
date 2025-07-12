@@ -19,7 +19,7 @@ pub struct RawPidController {
 #[wasm_bindgen]
 impl RawPidController {
     #[wasm_bindgen(constructor)]
-    pub fn new(kp: f32, ki: f32, kd: f32, axes_mask: u8) -> Self {
+    pub fn new(kp: f64, ki: f64, kd: f64, axes_mask: u8) -> Self {
         let controller = PidController::new(
             kp,
             ki,
@@ -29,7 +29,7 @@ impl RawPidController {
         Self { controller }
     }
 
-    pub fn set_kp(&mut self, kp: f32, axes: u8) {
+    pub fn set_kp(&mut self, kp: f64, axes: u8) {
         let axes = AxesMask::from_bits(axes).unwrap_or(AxesMask::all());
         if axes.contains(AxesMask::LIN_X) {
             self.controller.pd.lin_kp.x = kp;
@@ -61,7 +61,7 @@ impl RawPidController {
         }
     }
 
-    pub fn set_ki(&mut self, ki: f32, axes: u8) {
+    pub fn set_ki(&mut self, ki: f64, axes: u8) {
         let axes = AxesMask::from_bits(axes).unwrap_or(AxesMask::all());
         if axes.contains(AxesMask::LIN_X) {
             self.controller.lin_ki.x = ki;
@@ -93,7 +93,7 @@ impl RawPidController {
         }
     }
 
-    pub fn set_kd(&mut self, kd: f32, axes: u8) {
+    pub fn set_kd(&mut self, kd: f64, axes: u8) {
         let axes = AxesMask::from_bits(axes).unwrap_or(AxesMask::all());
         if axes.contains(AxesMask::LIN_X) {
             self.controller.pd.lin_kd.x = kd;
@@ -137,7 +137,7 @@ impl RawPidController {
 
     pub fn apply_linear_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &mut RawRigidBodySet,
         rb_handle: FlatHandle,
         target_translation: &RawVector,
@@ -160,11 +160,11 @@ impl RawPidController {
     #[cfg(feature = "dim2")]
     pub fn apply_angular_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &mut RawRigidBodySet,
         rb_handle: FlatHandle,
-        target_rotation: f32,
-        target_angvel: f32,
+        target_rotation: f64,
+        target_angvel: f64,
     ) {
         let rb_handle = crate::utils::body_handle(rb_handle);
         let Some(rb) = bodies.0.get_mut(rb_handle) else {
@@ -183,7 +183,7 @@ impl RawPidController {
     #[cfg(feature = "dim3")]
     pub fn apply_angular_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &mut RawRigidBodySet,
         rb_handle: FlatHandle,
         target_rotation: &RawRotation,
@@ -205,7 +205,7 @@ impl RawPidController {
 
     pub fn linear_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &RawRigidBodySet,
         rb_handle: FlatHandle,
         target_translation: &RawVector,
@@ -224,12 +224,12 @@ impl RawPidController {
     #[cfg(feature = "dim2")]
     pub fn angular_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &RawRigidBodySet,
         rb_handle: FlatHandle,
-        target_rotation: f32,
-        target_angvel: f32,
-    ) -> f32 {
+        target_rotation: f64,
+        target_angvel: f64,
+    ) -> f64 {
         let rb_handle = crate::utils::body_handle(rb_handle);
         let Some(rb) = bodies.0.get(rb_handle) else {
             return 0.0;
@@ -246,7 +246,7 @@ impl RawPidController {
     #[cfg(feature = "dim3")]
     pub fn angular_correction(
         &mut self,
-        dt: f32,
+        dt: f64,
         bodies: &RawRigidBodySet,
         rb_handle: FlatHandle,
         target_rotation: &RawRotation,

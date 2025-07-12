@@ -7,8 +7,10 @@
 extern crate nalgebra as na;
 #[cfg(feature = "dim2")]
 extern crate rapier2d as rapier;
-#[cfg(feature = "dim3")]
+#[cfg(all(feature = "dim3", not(feature = "f64")))]
 extern crate rapier3d as rapier;
+#[cfg(all(feature = "dim3", feature = "f64"))]
+extern crate rapier3d_f64 as rapier;
 #[macro_use]
 extern crate serde;
 

@@ -81,17 +81,17 @@ impl RawImpulseJointSet {
     }
 
     /// Return the lower limit along the given joint axis.
-    pub fn jointLimitsMin(&self, handle: FlatHandle, axis: RawJointAxis) -> f32 {
+    pub fn jointLimitsMin(&self, handle: FlatHandle, axis: RawJointAxis) -> f64 {
         self.map(handle, |j| j.data.limits[axis as usize].min)
     }
 
     /// If this is a prismatic joint, returns its upper limit.
-    pub fn jointLimitsMax(&self, handle: FlatHandle, axis: RawJointAxis) -> f32 {
+    pub fn jointLimitsMax(&self, handle: FlatHandle, axis: RawJointAxis) -> f64 {
         self.map(handle, |j| j.data.limits[axis as usize].max)
     }
 
     /// Enables and sets the joint limits
-    pub fn jointSetLimits(&mut self, handle: FlatHandle, axis: RawJointAxis, min: f32, max: f32) {
+    pub fn jointSetLimits(&mut self, handle: FlatHandle, axis: RawJointAxis, min: f64, max: f64) {
         self.map_mut(handle, |j| {
             j.data.set_limits(axis.into(), [min, max]);
         });
@@ -113,10 +113,10 @@ impl RawImpulseJointSet {
     pub fn jointConfigureBallMotorVelocity(
         &mut self,
         handle: FlatHandle,
-        vx: f32,
-        vy: f32,
-        vz: f32,
-        factor: f32,
+        vx: f64,
+        vy: f64,
+        vz: f64,
+        factor: f64,
     ) {
         let targetVel = Vector3::new(vx, vy, vz);
 
@@ -130,12 +130,12 @@ impl RawImpulseJointSet {
     pub fn jointConfigureBallMotorPosition(
         &mut self,
         handle: FlatHandle,
-        qw: f32,
-        qx: f32,
-        qy: f32,
-        qz: f32,
-        stiffness: f32,
-        damping: f32,
+        qw: f64,
+        qx: f64,
+        qy: f64,
+        qz: f64,
+        stiffness: f64,
+        damping: f64,
     ) {
         let quat = Quaternion::new(qw, qx, qy, qz);
 
@@ -153,15 +153,15 @@ impl RawImpulseJointSet {
     pub fn jointConfigureBallMotor(
         &mut self,
         handle: FlatHandle,
-        qw: f32,
-        qx: f32,
-        qy: f32,
-        qz: f32,
-        vx: f32,
-        vy: f32,
-        vz: f32,
-        stiffness: f32,
-        damping: f32,
+        qw: f64,
+        qx: f64,
+        qy: f64,
+        qz: f64,
+        vx: f64,
+        vy: f64,
+        vz: f64,
+        stiffness: f64,
+        damping: f64,
     ) {
         let quat = Quaternion::new(qw, qx, qy, qz);
         let vel = Vector3::new(vx, vy, vz);
@@ -181,8 +181,8 @@ impl RawImpulseJointSet {
         &mut self,
         handle: FlatHandle,
         axis: RawJointAxis,
-        targetVel: f32,
-        factor: f32,
+        targetVel: f64,
+        factor: f64,
     ) {
         self.jointConfigureMotor(handle, axis, 0.0, targetVel, 0.0, factor)
     }
@@ -191,9 +191,9 @@ impl RawImpulseJointSet {
         &mut self,
         handle: FlatHandle,
         axis: RawJointAxis,
-        targetPos: f32,
-        stiffness: f32,
-        damping: f32,
+        targetPos: f64,
+        stiffness: f64,
+        damping: f64,
     ) {
         self.jointConfigureMotor(handle, axis, targetPos, 0.0, stiffness, damping)
     }
@@ -202,10 +202,10 @@ impl RawImpulseJointSet {
         &mut self,
         handle: FlatHandle,
         axis: RawJointAxis,
-        targetPos: f32,
-        targetVel: f32,
-        stiffness: f32,
-        damping: f32,
+        targetPos: f64,
+        targetVel: f64,
+        stiffness: f64,
+        damping: f64,
     ) {
         self.map_mut(handle, |j| {
             j.data

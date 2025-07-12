@@ -802,7 +802,7 @@ export class Collider {
      * this returns the vertex buffer of said shape.
      * @deprecated this field will be removed in the future, please access this field on `shape` member instead.
      */
-    public vertices(): Float32Array {
+    public vertices(): Float64Array {
         return this.colliderSet.raw.coVertices(this.handle);
     }
 
@@ -821,7 +821,7 @@ export class Collider {
      * In 3D, the returned height matrix is provided in column-major order.
      * @deprecated this field will be removed in the future, please access this field on `shape` member instead.
      */
-    public heightfieldHeights(): Float32Array {
+    public heightfieldHeights(): Float64Array {
         return this.colliderSet.raw.coHeightfieldHeights(this.handle);
     }
 
@@ -1362,7 +1362,7 @@ export class ColliderDesc {
      *    the vertices are assumed to describe a line strip.
      */
     public static polyline(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices?: Uint32Array | null,
     ): ColliderDesc {
         const shape = new Polyline(vertices, indices);
@@ -1375,14 +1375,14 @@ export class ColliderDesc {
      * @param data - Defines the set of voxels. If this is a `Int32Array` then
      *               each voxel is defined from its (signed) grid coordinates,
      *               with 3 (resp 2) contiguous integers per voxel in 3D (resp 2D).
-     *               If this is a `Float32Array`, each voxel will be such that
+     *               If this is a `Float64Array`, each voxel will be such that
      *               they contain at least one point from this array (where each
      *               point is defined from 3 (resp 2) contiguous numbers per point
      *               in 3D (resp 2D).
      * @param voxelSize - The size of each voxel.
      */
     public static voxels(
-        voxels: Float32Array | Int32Array,
+        voxels: Float64Array | Int32Array,
         voxelSize: Vector,
     ): ColliderDesc {
         const shape = new Voxels(voxels, voxelSize);
@@ -1396,7 +1396,7 @@ export class ColliderDesc {
      * @param indices - The indices of the triangle mesh's triangles.
      */
     public static trimesh(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices: Uint32Array,
         flags?: TriMeshFlags,
     ): ColliderDesc {
@@ -1449,7 +1449,7 @@ export class ColliderDesc {
      * @param scale - The scale factor applied to the heightfield.
      */
     public static heightfield(
-        heights: Float32Array,
+        heights: Float64Array,
         scale: Vector,
     ): ColliderDesc {
         const shape = new Heightfield(heights, scale);
@@ -1462,7 +1462,7 @@ export class ColliderDesc {
      *
      * @param points - The point that will be used to compute the convex-hull.
      */
-    public static convexHull(points: Float32Array): ColliderDesc | null {
+    public static convexHull(points: Float64Array): ColliderDesc | null {
         const shape = new ConvexPolygon(points, false);
         return new ColliderDesc(shape);
     }
@@ -1473,7 +1473,7 @@ export class ColliderDesc {
      *
      * @param vertices - The vertices of the convex polyline.
      */
-    public static convexPolyline(vertices: Float32Array): ColliderDesc | null {
+    public static convexPolyline(vertices: Float64Array): ColliderDesc | null {
         const shape = new ConvexPolygon(vertices, true);
         return new ColliderDesc(shape);
     }
@@ -1487,7 +1487,7 @@ export class ColliderDesc {
      * @param borderRadius - The radius of the round border added to the convex polygon.
      */
     public static roundConvexHull(
-        points: Float32Array,
+        points: Float64Array,
         borderRadius: number,
     ): ColliderDesc | null {
         const shape = new RoundConvexPolygon(points, borderRadius, false);
@@ -1502,7 +1502,7 @@ export class ColliderDesc {
      * @param borderRadius - The radius of the round border added to the convex polyline.
      */
     public static roundConvexPolyline(
-        vertices: Float32Array,
+        vertices: Float64Array,
         borderRadius: number,
     ): ColliderDesc | null {
         const shape = new RoundConvexPolygon(vertices, borderRadius, true);
@@ -1554,7 +1554,7 @@ export class ColliderDesc {
     public static heightfield(
         nrows: number,
         ncols: number,
-        heights: Float32Array,
+        heights: Float64Array,
         scale: Vector,
         flags?: HeightFieldFlags,
     ): ColliderDesc {
@@ -1622,7 +1622,7 @@ export class ColliderDesc {
      *
      * @param points - The point that will be used to compute the convex-hull.
      */
-    public static convexHull(points: Float32Array): ColliderDesc | null {
+    public static convexHull(points: Float64Array): ColliderDesc | null {
         const shape = new ConvexPolyhedron(points, null);
         return new ColliderDesc(shape);
     }
@@ -1634,7 +1634,7 @@ export class ColliderDesc {
      * @param vertices - The vertices of the convex polyline.
      */
     public static convexMesh(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices?: Uint32Array | null,
     ): ColliderDesc | null {
         const shape = new ConvexPolyhedron(vertices, indices);
@@ -1650,7 +1650,7 @@ export class ColliderDesc {
      * @param borderRadius - The radius of the round border added to the convex polyhedron.
      */
     public static roundConvexHull(
-        points: Float32Array,
+        points: Float64Array,
         borderRadius: number,
     ): ColliderDesc | null {
         const shape = new RoundConvexPolyhedron(points, null, borderRadius);
@@ -1665,7 +1665,7 @@ export class ColliderDesc {
      * @param borderRadius - The radius of the round border added to the convex polyline.
      */
     public static roundConvexMesh(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices: Uint32Array | null,
         borderRadius: number,
     ): ColliderDesc | null {

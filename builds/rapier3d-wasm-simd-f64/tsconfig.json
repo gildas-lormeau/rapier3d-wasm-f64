@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "outDir": "./pkg",
+        "module": "ES6",
+        "target": "es6",
+        "lib": [
+            "es6",
+            "dom"
+        ],
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "declaration": true,
+        "rootDirs": [
+            "./pkg",
+            "./pkg/src"
+        ],
+        "forceConsistentCasingInFileNames": true,
+        "strict": false
+    },
+    "files": [
+        "./pkg/src/rapier.ts"
+    ]
+}

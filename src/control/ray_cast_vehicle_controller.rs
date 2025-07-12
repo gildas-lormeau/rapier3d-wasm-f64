@@ -254,14 +254,14 @@ impl RawDynamicRayCastVehicleController {
         }
     }
 
-    pub fn wheel_side_friction_stiffness(&self, i: usize) -> Option<f32> {
+    pub fn wheel_side_friction_stiffness(&self, i: usize) -> Option<f64> {
         self.controller
             .wheels()
             .get(i)
             .map(|w| w.side_friction_stiffness)
     }
 
-    pub fn set_wheel_side_friction_stiffness(&mut self, i: usize, stiffness: f32) {
+    pub fn set_wheel_side_friction_stiffness(&mut self, i: usize, stiffness: f64) {
         if let Some(wheel) = self.controller.wheels_mut().get_mut(i) {
             wheel.side_friction_stiffness = stiffness;
         }

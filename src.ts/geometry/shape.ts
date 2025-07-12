@@ -25,7 +25,7 @@ export abstract class Shape {
 
         let extents: Vector;
         let borderRadius: number;
-        let vs: Float32Array;
+        let vs: Float64Array;
         let indices: Uint32Array;
         let halfHeight: number;
         let radius: number;
@@ -991,7 +991,7 @@ export class Polyline extends Shape {
     /**
      * The vertices of the polyline.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * The indices of the segments.
@@ -1005,7 +1005,7 @@ export class Polyline extends Shape {
      * @param indices - The indices of the polyline's segments. If this is `null` or not provided, then
      *    the vertices are assumed to form a line strip.
      */
-    constructor(vertices: Float32Array, indices?: Uint32Array) {
+    constructor(vertices: Float64Array, indices?: Uint32Array) {
         super();
         this.vertices = vertices;
         this.indices = indices ?? new Uint32Array(0);
@@ -1025,7 +1025,7 @@ export class Voxels extends Shape {
     /**
      * The points or grid coordinates used to initialize the voxels.
      */
-    data: Float32Array | Int32Array;
+    data: Float64Array | Int32Array;
 
     /**
      * The dimensions of each voxel.
@@ -1038,13 +1038,13 @@ export class Voxels extends Shape {
      * @param data - Defines the set of voxels. If this is a `Int32Array` then
      *               each voxel is defined from its (signed) grid coordinates,
      *               with 3 (resp 2) contiguous integers per voxel in 3D (resp 2D).
-     *               If this is a `Float32Array`, each voxel will be such that
+     *               If this is a `Float64Array`, each voxel will be such that
      *               they contain at least one point from this array (where each
      *               point is defined from 3 (resp 2) contiguous numbers per point
      *               in 3D (resp 2D).
      * @param voxelSize - The size of each voxel.
      */
-    constructor(data: Float32Array | Int32Array, voxelSize: Vector) {
+    constructor(data: Float64Array | Int32Array, voxelSize: Vector) {
         super();
         this.data = data;
         this.voxelSize = voxelSize;
@@ -1074,7 +1074,7 @@ export class TriMesh extends Shape {
     /**
      * The vertices of the triangle mesh.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * The indices of the triangles.
@@ -1093,7 +1093,7 @@ export class TriMesh extends Shape {
      * @param indices - The indices of the triangle mesh's triangles.
      */
     constructor(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices: Uint32Array,
         flags?: TriMeshFlags,
     ) {
@@ -1118,7 +1118,7 @@ export class ConvexPolygon extends Shape {
     /**
      * The vertices of the convex polygon.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * Do we want to assume the vertices already form a convex hull?
@@ -1133,7 +1133,7 @@ export class ConvexPolygon extends Shape {
      *   be assumed to form a convex polyline and no convex-hull computation will
      *   be done automatically.
      */
-    constructor(vertices: Float32Array, skipConvexHullComputation: boolean) {
+    constructor(vertices: Float64Array, skipConvexHullComputation: boolean) {
         super();
         this.vertices = vertices;
         this.skipConvexHullComputation = !!skipConvexHullComputation;
@@ -1157,7 +1157,7 @@ export class RoundConvexPolygon extends Shape {
     /**
      * The vertices of the convex polygon.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * Do we want to assume the vertices already form a convex hull?
@@ -1179,7 +1179,7 @@ export class RoundConvexPolygon extends Shape {
      *   be done automatically.
      */
     constructor(
-        vertices: Float32Array,
+        vertices: Float64Array,
         borderRadius: number,
         skipConvexHullComputation: boolean,
     ) {
@@ -1210,7 +1210,7 @@ export class Heightfield extends Shape {
     /**
      * The heights of the heightfield, along its local `y` axis.
      */
-    heights: Float32Array;
+    heights: Float64Array;
 
     /**
      * The heightfield's length along its local `x` axis.
@@ -1223,7 +1223,7 @@ export class Heightfield extends Shape {
      * @param heights - The heights of the heightfield, along its local `y` axis.
      * @param scale - The scale factor applied to the heightfield.
      */
-    constructor(heights: Float32Array, scale: Vector) {
+    constructor(heights: Float64Array, scale: Vector) {
         super();
         this.heights = heights;
         this.scale = scale;
@@ -1249,7 +1249,7 @@ export class ConvexPolyhedron extends Shape {
     /**
      * The vertices of the convex polygon.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * The indices of the convex polygon.
@@ -1265,7 +1265,7 @@ export class ConvexPolyhedron extends Shape {
      *   automatically. Otherwise, it will be assumed that the mesh you provide
      *   is already convex.
      */
-    constructor(vertices: Float32Array, indices?: Uint32Array | null) {
+    constructor(vertices: Float64Array, indices?: Uint32Array | null) {
         super();
         this.vertices = vertices;
         this.indices = indices;
@@ -1289,7 +1289,7 @@ export class RoundConvexPolyhedron extends Shape {
     /**
      * The vertices of the convex polygon.
      */
-    vertices: Float32Array;
+    vertices: Float64Array;
 
     /**
      * The indices of the convex polygon.
@@ -1312,7 +1312,7 @@ export class RoundConvexPolyhedron extends Shape {
      * @param borderRadius - The radius of the borders of this convex polyhedron.
      */
     constructor(
-        vertices: Float32Array,
+        vertices: Float64Array,
         indices: Uint32Array | null | undefined,
         borderRadius: number,
     ) {
@@ -1355,7 +1355,7 @@ export class Heightfield extends Shape {
      * The heights of the heightfield along its local `y` axis,
      * provided as a matrix stored in column-major order.
      */
-    heights: Float32Array;
+    heights: Float64Array;
 
     /**
      * The dimensions of the heightfield's local `x,z` plane.
@@ -1379,7 +1379,7 @@ export class Heightfield extends Shape {
     constructor(
         nrows: number,
         ncols: number,
-        heights: Float32Array,
+        heights: Float64Array,
         scale: Vector,
         flags?: HeightFieldFlags,
     ) {

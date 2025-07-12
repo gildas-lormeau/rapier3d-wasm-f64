@@ -1,0 +1,56 @@
+[package]
+name = "rapier3d_wasm_simd_f64"
+version = "0.17.3"
+authors = ["Sébastien Crozet <developer@crozet.re>"]
+description = "3-dimensional physics engine in Rust with f64 precision - official JS bindings."
+documentation = "https://rapier.rs/rustdoc/rapier3d/index.html"
+homepage = "https://rapier.rs"
+repository = "https://github.com/dimforge/rapier.js"
+readme = "README.md"
+keywords = ["physics", "dynamics", "rigid", "real-time", "joints"]
+license = "Apache-2.0"
+edition = "2018"
+
+[features]
+default = ["dim3", "f64", "simd-stable"]
+dim3 = []
+f64 = []
+simd-stable = ["rapier3d-f64/simd-stable"]
+simd-nightly = ["rapier3d-f64/simd-nightly"]
+
+[lib]
+name = "rapier_wasm3d"
+path = "./../../src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+required-features = ["dim3"]
+
+[lints]
+rust.unexpected_cfgs = { level = "warn", check-cfg = [
+    'cfg(feature, values("dim2"))',
+] }
+
+[dependencies]
+rapier3d-f64 = { version = "0.26.1", features = [
+    "serde-serialize",
+    "debug-render",
+    "simd-stable",
+] }
+ref-cast = "1"
+wasm-bindgen = "0.2.100"
+js-sys = "0.3"
+nalgebra = "0.33"
+serde = { version = "1", features = ["derive", "rc"] }
+bincode = "1"
+palette = "0.7"
+
+[package.metadata.wasm-pack.profile.release]
+# add -g to keep debug symbols
+wasm-opt = [
+    '-O4',
+    '--dce',
+    '--enable-simd',
+    # The two options below are needed because of: https://github.com/rustwasm/wasm-pack/issues/1501
+    '--enable-bulk-memory',
+    '--enable-nontrapping-float-to-int',
+]
+#wasm-opt = ['-g']

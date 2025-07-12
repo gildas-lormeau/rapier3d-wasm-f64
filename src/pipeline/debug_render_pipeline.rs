@@ -1,12 +1,12 @@
 use crate::dynamics::{RawImpulseJointSet, RawMultibodyJointSet, RawRigidBodySet};
 use crate::geometry::{RawColliderSet, RawNarrowPhase};
-use js_sys::Float32Array;
+use js_sys::{Float32Array, Float64Array};
 use palette::convert::IntoColorUnclamped;
 use palette::rgb::Rgba;
 use palette::Hsla;
 use rapier::dynamics::{RigidBody, RigidBodySet};
 use rapier::geometry::ColliderSet;
-use rapier::math::{Point, Real};
+use rapier::math::Point;
 use rapier::pipeline::{DebugRenderBackend, DebugRenderObject, DebugRenderPipeline};
 use rapier::prelude::{QueryFilter, QueryFilterFlags};
 use wasm_bindgen::prelude::*;
@@ -14,7 +14,7 @@ use wasm_bindgen::prelude::*;
 #[wasm_bindgen]
 pub struct RawDebugRenderPipeline {
     pub(crate) raw: DebugRenderPipeline,
-    vertices: Vec<f32>,
+    vertices: Vec<f64>,
     colors: Vec<f32>,
 }
 
@@ -29,9 +29,10 @@ impl RawDebugRenderPipeline {
         }
     }
 
-    pub fn vertices(&self) -> Float32Array {
-        let output = Float32Array::new_with_length(self.vertices.len() as u32);
-        output.copy_from(&self.vertices);
+    pub fn vertices(&self) -> Float64Array {
+        let output = Float64Array::new_with_length(self.vertices.len() as u32);
+        let f64_vertices: Vec<f64> = self.vertices.iter().map(|&v| v as f64).collect();
+        output.copy_from(&f64_vertices);
         output
     }
 
@@ -86,7 +87,7 @@ struct CopyToBuffersBackend<'a> {
     filter: QueryFilter<'a>,
     bodies: &'a RigidBodySet,
     colliders: &'a ColliderSet,
-    vertices: &'a mut Vec<f32>,
+    vertices: &'a mut Vec<f64>,
     colors: &'a mut Vec<f32>,
 }
 
@@ -135,8 +136,8 @@ impl<'a> DebugRenderBackend for CopyToBuffersBackend<'a> {
     fn draw_line(
         &mut self,
         _object: DebugRenderObject,
-        a: Point<Real>,
-        b: Point<Real>,
+        a: Point<f64>,
+        b: Point<f64>,
         color: [f32; 4],
     ) {
         self.vertices.extend_from_slice(a.coords.as_slice());
@@ -144,7 +145,7 @@ impl<'a> DebugRenderBackend for CopyToBuffersBackend<'a> {
 
         // Convert to RGB which will be easier to handle in JS.
         let hsl = Hsla::new(color[0], color[1], color[2], color[3]);
-        let rgb: Rgba = hsl.into_color_unclamped();
+        let rgb: Rgba<f32> = hsl.into_color_unclamped();
         self.colors.extend_from_slice(&[
             rgb.red, rgb.green, rgb.blue, rgb.alpha, rgb.red, rgb.green, rgb.blue, rgb.alpha,
         ]);

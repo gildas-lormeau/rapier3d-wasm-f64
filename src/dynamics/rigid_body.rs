@@ -64,7 +64,7 @@ impl RawRigidBodySet {
     /// - `wakeUp`: forces the rigid-body to wake-up so it is properly affected by forces if it
     /// wasn't moving before modifying its position.
     #[cfg(feature = "dim3")]
-    pub fn rbSetTranslation(&mut self, handle: FlatHandle, x: f32, y: f32, z: f32, wakeUp: bool) {
+    pub fn rbSetTranslation(&mut self, handle: FlatHandle, x: f64, y: f64, z: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.set_translation(na::Vector3::new(x, y, z), wakeUp);
         })
@@ -78,7 +78,7 @@ impl RawRigidBodySet {
     /// - `wakeUp`: forces the rigid-body to wake-up so it is properly affected by forces if it
     /// wasn't moving before modifying its position.
     #[cfg(feature = "dim2")]
-    pub fn rbSetTranslation(&mut self, handle: FlatHandle, x: f32, y: f32, wakeUp: bool) {
+    pub fn rbSetTranslation(&mut self, handle: FlatHandle, x: f64, y: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.set_translation(na::Vector2::new(x, y), wakeUp);
         })
@@ -99,10 +99,10 @@ impl RawRigidBodySet {
     pub fn rbSetRotation(
         &mut self,
         handle: FlatHandle,
-        x: f32,
-        y: f32,
-        z: f32,
-        w: f32,
+        x: f64,
+        y: f64,
+        z: f64,
+        w: f64,
         wakeUp: bool,
     ) {
         if let Some(q) = na::Unit::try_new(na::Quaternion::new(w, x, y, z), 0.0) {
@@ -117,7 +117,7 @@ impl RawRigidBodySet {
     /// - `wakeUp`: forces the rigid-body to wake-up so it is properly affected by forces if it
     /// wasn't moving before modifying its position.
     #[cfg(feature = "dim2")]
-    pub fn rbSetRotation(&mut self, handle: FlatHandle, angle: f32, wakeUp: bool) {
+    pub fn rbSetRotation(&mut self, handle: FlatHandle, angle: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.set_rotation(na::UnitComplex::new(angle), wakeUp)
         })
@@ -132,7 +132,7 @@ impl RawRigidBodySet {
 
     /// Sets the angular velocity of this rigid-body.
     #[cfg(feature = "dim2")]
-    pub fn rbSetAngvel(&mut self, handle: FlatHandle, angvel: f32, wakeUp: bool) {
+    pub fn rbSetAngvel(&mut self, handle: FlatHandle, angvel: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.set_angvel(angvel, wakeUp);
         });
@@ -159,7 +159,7 @@ impl RawRigidBodySet {
     /// - `y`: the world-space position of the rigid-body along the `y` axis.
     /// - `z`: the world-space position of the rigid-body along the `z` axis.
     #[cfg(feature = "dim3")]
-    pub fn rbSetNextKinematicTranslation(&mut self, handle: FlatHandle, x: f32, y: f32, z: f32) {
+    pub fn rbSetNextKinematicTranslation(&mut self, handle: FlatHandle, x: f64, y: f64, z: f64) {
         self.map_mut(handle, |rb| {
             rb.set_next_kinematic_translation(na::Vector3::new(x, y, z));
         })
@@ -177,7 +177,7 @@ impl RawRigidBodySet {
     /// - `x`: the world-space position of the rigid-body along the `x` axis.
     /// - `y`: the world-space position of the rigid-body along the `y` axis.
     #[cfg(feature = "dim2")]
-    pub fn rbSetNextKinematicTranslation(&mut self, handle: FlatHandle, x: f32, y: f32) {
+    pub fn rbSetNextKinematicTranslation(&mut self, handle: FlatHandle, x: f64, y: f64) {
         self.map_mut(handle, |rb| {
             rb.set_next_kinematic_translation(na::Vector2::new(x, y));
         })
@@ -200,10 +200,10 @@ impl RawRigidBodySet {
     pub fn rbSetNextKinematicRotation(
         &mut self,
         handle: FlatHandle,
-        x: f32,
-        y: f32,
-        z: f32,
-        w: f32,
+        x: f64,
+        y: f64,
+        z: f64,
+        w: f64,
     ) {
         if let Some(q) = na::Unit::try_new(na::Quaternion::new(w, x, y, z), 0.0) {
             self.map_mut(handle, |rb| {
@@ -223,7 +223,7 @@ impl RawRigidBodySet {
     /// # Parameters
     /// - `angle`: the rotation angle, in radians.
     #[cfg(feature = "dim2")]
-    pub fn rbSetNextKinematicRotation(&mut self, handle: FlatHandle, angle: f32) {
+    pub fn rbSetNextKinematicRotation(&mut self, handle: FlatHandle, angle: f64) {
         self.map_mut(handle, |rb| {
             rb.set_next_kinematic_rotation(na::UnitComplex::new(angle));
         })
@@ -239,7 +239,7 @@ impl RawRigidBodySet {
         })
     }
 
-    pub fn rbSetAdditionalMass(&mut self, handle: FlatHandle, mass: f32, wake_up: bool) {
+    pub fn rbSetAdditionalMass(&mut self, handle: FlatHandle, mass: f64, wake_up: bool) {
         self.map_mut(handle, |rb| {
             rb.set_additional_mass(mass, wake_up);
         })
@@ -249,7 +249,7 @@ impl RawRigidBodySet {
     pub fn rbSetAdditionalMassProperties(
         &mut self,
         handle: FlatHandle,
-        mass: f32,
+        mass: f64,
         centerOfMass: &RawVector,
         principalAngularInertia: &RawVector,
         angularInertiaFrame: &RawRotation,
@@ -270,9 +270,9 @@ impl RawRigidBodySet {
     pub fn rbSetAdditionalMassProperties(
         &mut self,
         handle: FlatHandle,
-        mass: f32,
+        mass: f64,
         centerOfMass: &RawVector,
-        principalAngularInertia: f32,
+        principalAngularInertia: f64,
         wake_up: bool,
     ) {
         self.map_mut(handle, |rb| {
@@ -288,7 +288,7 @@ impl RawRigidBodySet {
 
     /// The angular velocity of this rigid-body.
     #[cfg(feature = "dim2")]
-    pub fn rbAngvel(&self, handle: FlatHandle) -> f32 {
+    pub fn rbAngvel(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.angvel())
     }
 
@@ -366,19 +366,19 @@ impl RawRigidBodySet {
         self.map_mut(handle, |rb| rb.enable_ccd(enabled))
     }
 
-    pub fn rbSetSoftCcdPrediction(&mut self, handle: FlatHandle, prediction: f32) {
+    pub fn rbSetSoftCcdPrediction(&mut self, handle: FlatHandle, prediction: f64) {
         self.map_mut(handle, |rb| rb.set_soft_ccd_prediction(prediction))
     }
 
     /// The mass of this rigid-body.
-    pub fn rbMass(&self, handle: FlatHandle) -> f32 {
+    pub fn rbMass(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.mass())
     }
 
     /// The inverse of the mass of a rigid-body.
     ///
     /// If this is zero, the rigid-body is assumed to have infinite mass.
-    pub fn rbInvMass(&self, handle: FlatHandle) -> f32 {
+    pub fn rbInvMass(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.mass_properties().local_mprops.inv_mass)
     }
 
@@ -403,7 +403,7 @@ impl RawRigidBodySet {
     ///
     /// Components set to zero are assumed to be infinite along the corresponding principal axis.
     #[cfg(feature = "dim2")]
-    pub fn rbInvPrincipalInertiaSqrt(&self, handle: FlatHandle) -> f32 {
+    pub fn rbInvPrincipalInertiaSqrt(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| {
             rb.mass_properties()
                 .local_mprops
@@ -439,7 +439,7 @@ impl RawRigidBodySet {
 
     /// The angular inertia along the principal inertia axes of the rigid-body.
     #[cfg(feature = "dim2")]
-    pub fn rbPrincipalInertia(&self, handle: FlatHandle) -> f32 {
+    pub fn rbPrincipalInertia(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| {
             rb.mass_properties().local_mprops.principal_inertia().into()
         })
@@ -456,7 +456,7 @@ impl RawRigidBodySet {
     /// The square-root of the world-space inverse angular inertia tensor of the rigid-body,
     /// taking into account rotation locking.
     #[cfg(feature = "dim2")]
-    pub fn rbEffectiveWorldInvInertiaSqrt(&self, handle: FlatHandle) -> f32 {
+    pub fn rbEffectiveWorldInvInertiaSqrt(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| {
             rb.mass_properties().effective_world_inv_inertia_sqrt.into()
         })
@@ -474,7 +474,7 @@ impl RawRigidBodySet {
     /// The effective world-space angular inertia (that takes the potential rotation locking into account) of
     /// this rigid-body.
     #[cfg(feature = "dim2")]
-    pub fn rbEffectiveAngularInertia(&self, handle: FlatHandle) -> f32 {
+    pub fn rbEffectiveAngularInertia(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| {
             rb.mass_properties().effective_angular_inertia().into()
         })
@@ -504,7 +504,7 @@ impl RawRigidBodySet {
     pub fn rbIsCcdEnabled(&self, handle: FlatHandle) -> bool {
         self.map(handle, |rb| rb.is_ccd_enabled())
     }
-    pub fn rbSoftCcdPrediction(&self, handle: FlatHandle) -> f32 {
+    pub fn rbSoftCcdPrediction(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.soft_ccd_prediction())
     }
 
@@ -548,20 +548,20 @@ impl RawRigidBodySet {
     }
 
     /// The linear damping coefficient of this rigid-body.
-    pub fn rbLinearDamping(&self, handle: FlatHandle) -> f32 {
+    pub fn rbLinearDamping(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.linear_damping())
     }
 
     /// The angular damping coefficient of this rigid-body.
-    pub fn rbAngularDamping(&self, handle: FlatHandle) -> f32 {
+    pub fn rbAngularDamping(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.angular_damping())
     }
 
-    pub fn rbSetLinearDamping(&mut self, handle: FlatHandle, factor: f32) {
+    pub fn rbSetLinearDamping(&mut self, handle: FlatHandle, factor: f64) {
         self.map_mut(handle, |rb| rb.set_linear_damping(factor));
     }
 
-    pub fn rbSetAngularDamping(&mut self, handle: FlatHandle, factor: f32) {
+    pub fn rbSetAngularDamping(&mut self, handle: FlatHandle, factor: f64) {
         self.map_mut(handle, |rb| rb.set_angular_damping(factor));
     }
 
@@ -573,11 +573,11 @@ impl RawRigidBodySet {
         self.map(handle, |rb| rb.is_enabled())
     }
 
-    pub fn rbGravityScale(&self, handle: FlatHandle) -> f32 {
+    pub fn rbGravityScale(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.gravity_scale())
     }
 
-    pub fn rbSetGravityScale(&mut self, handle: FlatHandle, factor: f32, wakeUp: bool) {
+    pub fn rbSetGravityScale(&mut self, handle: FlatHandle, factor: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| rb.set_gravity_scale(factor, wakeUp));
     }
 
@@ -623,7 +623,7 @@ impl RawRigidBodySet {
     /// - `torque`: the torque to apply on the rigid-body.
     /// - `wakeUp`: should the rigid-body be automatically woken-up?
     #[cfg(feature = "dim2")]
-    pub fn rbAddTorque(&mut self, handle: FlatHandle, torque: f32, wakeUp: bool) {
+    pub fn rbAddTorque(&mut self, handle: FlatHandle, torque: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.add_torque(torque, wakeUp);
         })
@@ -647,7 +647,7 @@ impl RawRigidBodySet {
     /// - `torque impulse`: the torque impulse to apply on the rigid-body.
     /// - `wakeUp`: should the rigid-body be automatically woken-up?
     #[cfg(feature = "dim2")]
-    pub fn rbApplyTorqueImpulse(&mut self, handle: FlatHandle, torque_impulse: f32, wakeUp: bool) {
+    pub fn rbApplyTorqueImpulse(&mut self, handle: FlatHandle, torque_impulse: f64, wakeUp: bool) {
         self.map_mut(handle, |rb| {
             rb.apply_torque_impulse(torque_impulse, wakeUp);
         })
@@ -740,7 +740,7 @@ impl RawRigidBodySet {
     /// Retrieves the constant torque(s) the user added to this rigid-body.
     /// Returns zero if the rigid-body is not dynamic.
     #[cfg(feature = "dim2")]
-    pub fn rbUserTorque(&self, handle: FlatHandle) -> f32 {
+    pub fn rbUserTorque(&self, handle: FlatHandle) -> f64 {
         self.map(handle, |rb| rb.user_torque())
     }
 

@@ -21,14 +21,14 @@ export class DebugRenderBuffers {
      * floats. For example, in 2D, the array: `[1, 2, 3, 4, 5, 6, 7, 8]`
      * describes the two segments `[[1, 2], [3, 4]]` and `[[5, 6], [7, 8]]`.
      */
-    public vertices: Float32Array;
+    public vertices: Float64Array;
     /**
      * The color buffer. There is one color per vertex, and each color
      * has four consecutive components (in RGBA format).
      */
     public colors: Float32Array;
 
-    constructor(vertices: Float32Array, colors: Float32Array) {
+    constructor(vertices: Float64Array, colors: Float32Array) {
         this.vertices = vertices;
         this.colors = colors;
     }
@@ -42,7 +42,7 @@ export class DebugRenderBuffers {
  */
 export class DebugRenderPipeline {
     raw: RawDebugRenderPipeline;
-    public vertices: Float32Array;
+    public vertices: Float64Array;
     public colors: Float32Array;
 
     /**

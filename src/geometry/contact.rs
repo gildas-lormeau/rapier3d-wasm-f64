@@ -9,7 +9,7 @@ pub struct RawShapeContact {
 
 #[wasm_bindgen]
 impl RawShapeContact {
-    pub fn distance(&self) -> f32 {
+    pub fn distance(&self) -> f64 {
         self.contact.dist
     }
 
