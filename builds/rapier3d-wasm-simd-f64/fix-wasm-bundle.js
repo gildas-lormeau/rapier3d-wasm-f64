@@ -15,21 +15,17 @@ const BUNDLE_PATH = "pkg/rapier3d-bundle.js";
 const PKG_JSON_PATH = "pkg/package.json";
 
 const WASM_INIT_CODE = `
-// Initialize WASM module with required imports
 (function initWasm() {
     try {
         let wasmBytes;
         if (typeof atob === 'undefined') {
-            // Node.js environment
             wasmBytes = Buffer.from(rapier_wasm3d_bg, 'base64');
         } else {
-            // Browser environment
             wasmBytes = Uint8Array.from(atob(rapier_wasm3d_bg), c => c.charCodeAt(0));
         }
         
         const wasmModule = new WebAssembly.Module(wasmBytes);
         
-        // Create the imports object with all required functions
         const imports = {
             './rapier_wasm3d_bg.js': {
                 __wbindgen_number_new: function(v) { return addHeapObject(v); },
@@ -91,11 +87,8 @@ const WASM_INIT_CODE = `
         
         const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
         __wbg_set_wasm(wasmInstance.exports);
-        
-        console.log('WASM module initialized successfully');
     } catch (error) {
         console.error('Failed to initialize WASM:', error);
-        // Keep the original fallback that will allow the module to load but functions will fail
         __wbg_set_wasm(wasm$1);
     }
 })();
