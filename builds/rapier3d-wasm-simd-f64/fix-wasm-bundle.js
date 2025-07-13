@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Post-build script to fix WASM initialization in rapier3d-bundle.js
- * This script automatically patches the bundle to properly initialize the WASM module
- * and optionally minifies the result
- */
-
 import { existsSync } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
