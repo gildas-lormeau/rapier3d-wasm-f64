@@ -96,9 +96,6 @@ name = "arrayvec"
 version = "0.7.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c02d123df017efcdfbd739ef81735b36c5ba83ec3c59c80a9d7ecc718f92e50"
-dependencies = [
- "serde",
-]
 
 [[package]]
 name = "autocfg"
@@ -368,90 +365,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "dimforge_rapier2d"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier2d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "dimforge_rapier2d-deterministic"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier2d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "dimforge_rapier2d-simd"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier2d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "dimforge_rapier3d"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier3d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "dimforge_rapier3d-deterministic"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier3d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
-name = "dimforge_rapier3d-simd"
-version = "0.17.0"
-dependencies = [
- "bincode",
- "js-sys",
- "nalgebra",
- "palette",
- "rapier3d",
- "ref-cast",
- "serde",
- "wasm-bindgen",
-]
-
-[[package]]
 name = "downcast-rs"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -619,17 +532,6 @@ dependencies = [
  "same-file",
  "walkdir",
  "winapi-util",
-]
-
-[[package]]
-name = "indexmap"
-version = "2.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cea70ddb795996207ad57735b50c5982d8844f38ba9ee5f1aedcfb708a2aa11e"
-dependencies = [
- "equivalent",
- "hashbrown",
- "serde",
 ]
 
 [[package]]
@@ -823,10 +725,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "parry2d"
+name = "parry3d-f64"
 version = "0.21.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fcc75102c1fac2294401262c78e5a42abe7168244c9436df2fec8fe0c27395c7"
+checksum = "95ba84fdf1b5b1579829399cee5e1e78d52ad0e376a17e8bd56768568080821d"
 dependencies = [
  "approx",
  "arrayvec",
@@ -835,33 +737,6 @@ dependencies = [
  "either",
  "ena",
  "hashbrown",
- "indexmap",
- "log",
- "nalgebra",
- "num-derive",
- "num-traits",
- "ordered-float",
- "serde",
- "simba",
- "slab",
- "spade",
- "thiserror",
-]
-
-[[package]]
-name = "parry3d"
-version = "0.21.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e7f8d0a3b2f4c0e250d4599b69e490535521c3497e2b88b0b5d2ada251bc83a8"
-dependencies = [
- "approx",
- "arrayvec",
- "bitflags",
- "downcast-rs",
- "either",
- "ena",
- "hashbrown",
- "indexmap",
  "log",
  "nalgebra",
  "num-derive",
@@ -1079,10 +954,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "rapier2d"
+name = "rapier3d-f64"
 version = "0.26.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b70793351467e663d06f52ffdf6138a1d7920b305ee4b7751e1adb90d56a797f"
+checksum = "209a048b3b7818b2209ea20c9519a4c3d14fa4ab430af84fc7cf6d8106fa4ed4"
 dependencies = [
  "approx",
  "arrayvec",
@@ -1095,7 +970,7 @@ dependencies = [
  "num-derive",
  "num-traits",
  "ordered-float",
- "parry2d",
+ "parry3d-f64",
  "profiling",
  "rustc-hash",
  "serde",
@@ -1105,29 +980,17 @@ dependencies = [
 ]
 
 [[package]]
-name = "rapier3d"
-version = "0.26.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f1015500058823ba9c479c908d7069adcf3f0f51a3e49dca7efc5575df7e574"
+name = "rapier3d_wasm_simd_f64"
+version = "0.17.3"
 dependencies = [
- "approx",
- "arrayvec",
- "bit-vec",
- "bitflags",
- "crossbeam",
- "downcast-rs",
- "log",
+ "bincode",
+ "js-sys",
  "nalgebra",
- "num-derive",
- "num-traits",
- "ordered-float",
- "parry3d",
- "profiling",
- "rustc-hash",
+ "palette",
+ "rapier3d-f64",
+ "ref-cast",
  "serde",
- "simba",
- "thiserror",
- "vec_map",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -1294,7 +1157,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b3a386a501cd104797982c15ae17aafe8b9261315b5d07e3ec803f2ea26be0fa"
 dependencies = [
  "approx",
- "libm",
  "num-complex",
  "num-traits",
  "paste",
