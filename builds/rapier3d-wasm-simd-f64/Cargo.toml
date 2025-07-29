@@ -1,6 +1,6 @@
 [package]
 name = "rapier3d_wasm_simd_f64"
-version = "0.17.3"
+version = "0.18.0"
 authors = ["Sébastien Crozet <developer@crozet.re>"]
 description = "3-dimensional physics engine in Rust with f64 precision - official JS bindings."
 documentation = "https://rapier.rs/rustdoc/rapier3d/index.html"
@@ -30,7 +30,7 @@ rust.unexpected_cfgs = { level = "warn", check-cfg = [
 ] }
 
 [dependencies]
-rapier3d-f64 = { version = "0.26.1", features = [
+rapier3d-f64 = { version = "0.27.0", features = [
     "serde-serialize",
     "debug-render",
     "simd-stable",

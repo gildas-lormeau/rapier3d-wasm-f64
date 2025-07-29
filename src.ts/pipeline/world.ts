@@ -9,7 +9,6 @@ import {
     RawMultibodyJointSet,
     RawNarrowPhase,
     RawPhysicsPipeline,
-    RawQueryPipeline,
     RawRigidBodySet,
     RawSerializationPipeline,
     RawDebugRenderPipeline,
@@ -49,7 +48,7 @@ import {
 } from "../dynamics";
 import {Rotation, Vector, VectorOps} from "../math";
 import {PhysicsPipeline} from "./physics_pipeline";
-import {QueryFilterFlags, QueryPipeline} from "./query_pipeline";
+import {QueryFilterFlags} from "./query_pipeline";
 import {SerializationPipeline} from "./serialization_pipeline";
 import {EventQueue} from "./event_queue";
 import {PhysicsHooks} from "./physics_hooks";
@@ -83,7 +82,6 @@ export class World {
     impulseJoints: ImpulseJointSet;
     multibodyJoints: MultibodyJointSet;
     ccdSolver: CCDSolver;
-    queryPipeline: QueryPipeline;
     physicsPipeline: PhysicsPipeline;
     serializationPipeline: SerializationPipeline;
     debugRenderPipeline: DebugRenderPipeline;
@@ -111,7 +109,6 @@ export class World {
         this.impulseJoints.free();
         this.multibodyJoints.free();
         this.ccdSolver.free();
-        this.queryPipeline.free();
         this.physicsPipeline.free();
         this.serializationPipeline.free();
         this.debugRenderPipeline.free();
@@ -131,7 +128,6 @@ export class World {
         this.ccdSolver = undefined;
         this.impulseJoints = undefined;
         this.multibodyJoints = undefined;
-        this.queryPipeline = undefined;
         this.physicsPipeline = undefined;
         this.serializationPipeline = undefined;
         this.debugRenderPipeline = undefined;
@@ -154,7 +150,6 @@ export class World {
         rawImpulseJoints?: RawImpulseJointSet,
         rawMultibodyJoints?: RawMultibodyJointSet,
         rawCCDSolver?: RawCCDSolver,
-        rawQueryPipeline?: RawQueryPipeline,
         rawPhysicsPipeline?: RawPhysicsPipeline,
         rawSerializationPipeline?: RawSerializationPipeline,
         rawDebugRenderPipeline?: RawDebugRenderPipeline,
@@ -171,7 +166,6 @@ export class World {
         this.impulseJoints = new ImpulseJointSet(rawImpulseJoints);
         this.multibodyJoints = new MultibodyJointSet(rawMultibodyJoints);
         this.ccdSolver = new CCDSolver(rawCCDSolver);
-        this.queryPipeline = new QueryPipeline(rawQueryPipeline);
         this.physicsPipeline = new PhysicsPipeline(rawPhysicsPipeline);
         this.serializationPipeline = new SerializationPipeline(
             rawSerializationPipeline,
@@ -286,7 +280,6 @@ export class World {
             eventQueue,
             hooks,
         );
-        this.queryPipeline.update(this.colliders);
     }
 
     /**
@@ -302,15 +295,16 @@ export class World {
         );
     }
 
-    /**
-     * Ensure subsequent scene queries take into account the collider positions set before this method is called.
-     *
-     * This does not step the physics simulation forward.
-     */
-    public updateSceneQueries() {
-        this.propagateModifiedBodyPositionsToColliders();
-        this.queryPipeline.update(this.colliders);
-    }
+    // TODO: This needs to trigger a broad-phase update but without emitting collision events?
+    // /**
+    //  * Ensure subsequent scene queries take into account the collider positions set before this method is called.
+    //  *
+    //  * This does not step the physics simulation forward.
+    //  */
+    // public updateSceneQueries() {
+    //     this.propagateModifiedBodyPositionsToColliders();
+    //     this.queryPipeline.update(this.colliders);
+    // }
 
     /**
      * The current simulation timestep.
@@ -420,6 +414,27 @@ export class World {
         this.integrationParameters.numInternalPgsIterations = niter;
     }
 
+    /**
+     * The number of substeps continuous collision-detection can run (default: `1`).
+     */
+    get maxCcdSubsteps(): number {
+        return this.integrationParameters.maxCcdSubsteps;
+    }
+
+    /**
+     * Sets the number of substeps continuous collision-detection can run (default: `1`).
+     *
+     * CCD operates using a "motion clamping" mechanism where all fast-moving object trajectories will
+     * be truncated to their first impact on their path. The number of CCD substeps beyond 1 indicate how
+     * many times that trajectory will be updated and continued after a hit. This can results in smoother
+     * paths, but at a significant computational cost.
+     *
+     * @param niter - The new maximum number of CCD substeps. Setting to `0` disables CCD entirely.
+     */
+    set maxCcdSubsteps(substeps: number) {
+        this.integrationParameters.maxCcdSubsteps = substeps;
+    }
+
     /// Configures the integration parameters to match the old PGS solver
     /// from Rapier JS version <= 0.11.
     ///
@@ -481,9 +496,10 @@ export class World {
         let controller = new KinematicCharacterController(
             offset,
             this.integrationParameters,
+            this.broadPhase,
+            this.narrowPhase,
             this.bodies,
             this.colliders,
-            this.queryPipeline,
         );
         this.characterControllers.add(controller);
         return controller;
@@ -555,9 +571,10 @@ export class World {
     ): DynamicRayCastVehicleController {
         let controller = new DynamicRayCastVehicleController(
             chassis,
+            this.broadPhase,
+            this.narrowPhase,
             this.bodies,
             this.colliders,
-            this.queryPipeline,
         );
         this.vehicleControllers.add(controller);
         return controller;
@@ -783,7 +800,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): RayColliderHit | null {
-        return this.queryPipeline.castRay(
+        return this.broadPhase.castRay(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             ray,
@@ -819,7 +837,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): RayColliderIntersection | null {
-        return this.queryPipeline.castRayAndGetNormal(
+        return this.broadPhase.castRayAndGetNormal(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             ray,
@@ -857,7 +876,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ) {
-        this.queryPipeline.intersectionsWithRay(
+        this.broadPhase.intersectionsWithRay(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             ray,
@@ -891,7 +911,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): Collider | null {
-        let handle = this.queryPipeline.intersectionWithShape(
+        let handle = this.broadPhase.intersectionWithShape(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             shapePos,
@@ -927,7 +948,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): PointColliderProjection | null {
-        return this.queryPipeline.projectPoint(
+        return this.broadPhase.projectPoint(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             point,
@@ -955,7 +977,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): PointColliderProjection | null {
-        return this.queryPipeline.projectPointAndGetFeature(
+        return this.broadPhase.projectPointAndGetFeature(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             point,
@@ -985,7 +1008,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ) {
-        this.queryPipeline.intersectionsWithPoint(
+        this.broadPhase.intersectionsWithPoint(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             point,
@@ -1031,7 +1055,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ): ColliderShapeCastHit | null {
-        return this.queryPipeline.castShape(
+        return this.broadPhase.castShape(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             shapePos,
@@ -1070,7 +1095,8 @@ export class World {
         filterExcludeRigidBody?: RigidBody,
         filterPredicate?: (collider: Collider) => boolean,
     ) {
-        this.queryPipeline.intersectionsWithShape(
+        this.broadPhase.intersectionsWithShape(
+            this.narrowPhase,
             this.bodies,
             this.colliders,
             shapePos,
@@ -1098,7 +1124,10 @@ export class World {
         aabbHalfExtents: Vector,
         callback: (handle: Collider) => boolean,
     ) {
-        this.queryPipeline.collidersWithAabbIntersectingAabb(
+        this.broadPhase.collidersWithAabbIntersectingAabb(
+            this.narrowPhase,
+            this.bodies,
+            this.colliders,
             aabbCenter,
             aabbHalfExtents,
             this.colliders.castClosure(callback),
@@ -1162,5 +1191,182 @@ export class World {
             collider1.handle,
             collider2.handle,
         );
+    }
+
+    /**
+     * Sets whether internal performance profiling is enabled (default: false).
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    set profilerEnabled(enabled: boolean) {
+        this.physicsPipeline.raw.set_profiler_enabled(enabled);
+    }
+
+    /**
+     * Indicates if the internal performance profiling is enabled.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    get profilerEnabled(): boolean {
+        return this.physicsPipeline.raw.is_profiler_enabled();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the entire simulation step.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingStep(): number {
+        return this.physicsPipeline.raw.timing_step();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the collision-detection
+     * (broad-phase + narrow-phase).
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCollisionDetection(): number {
+        return this.physicsPipeline.raw.timing_collision_detection();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the broad-phase.
+     *
+     * This timing is included in `timingCollisionDetection`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingBroadPhase(): number {
+        return this.physicsPipeline.raw.timing_broad_phase();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the narrow-phase.
+     *
+     * This timing is included in `timingCollisionDetection`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingNarrowPhase(): number {
+        return this.physicsPipeline.raw.timing_narrow_phase();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the constraint solver.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingSolver(): number {
+        return this.physicsPipeline.raw.timing_solver();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the constraint
+     * initialization.
+     *
+     * This timing is included in `timingSolver`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingVelocityAssembly(): number {
+        return this.physicsPipeline.raw.timing_velocity_assembly();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the constraint
+     * resolution.
+     *
+     * This timing is included in `timingSolver`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingVelocityResolution(): number {
+        return this.physicsPipeline.raw.timing_velocity_resolution();
+    }
+
+    /**
+     * The time spent in milliseconds by the last step to run the rigid-body
+     * velocity update.
+     *
+     * This timing is included in `timingSolver`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingVelocityUpdate(): number {
+        return this.physicsPipeline.raw.timing_velocity_update();
+    }
+
+    /**
+     * The time spent in milliseconds by writing rigid-body velocities
+     * calculated by the solver back into the rigid-bodies.
+     *
+     * This timing is included in `timingSolver`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingVelocityWriteback(): number {
+        return this.physicsPipeline.raw.timing_velocity_writeback();
+    }
+
+    /**
+     * The total time spent in CCD detection and resolution.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCcd(): number {
+        return this.physicsPipeline.raw.timing_ccd();
+    }
+
+    /**
+     * The total time spent searching for the continuous hits during CCD.
+     *
+     * This timing is included in `timingCcd`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCcdToiComputation(): number {
+        return this.physicsPipeline.raw.timing_ccd_toi_computation();
+    }
+
+    /**
+     * The total time spent in the broad-phase during CCD.
+     *
+     * This timing is included in `timingCcd`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCcdBroadPhase(): number {
+        return this.physicsPipeline.raw.timing_ccd_broad_phase();
+    }
+
+    /**
+     * The total time spent in the narrow-phase during CCD.
+     *
+     * This timing is included in `timingCcd`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCcdNarrowPhase(): number {
+        return this.physicsPipeline.raw.timing_ccd_narrow_phase();
+    }
+
+    /**
+     * The total time spent in the constraints resolution during CCD.
+     *
+     * This timing is included in `timingCcd`.
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingCcdSolver(): number {
+        return this.physicsPipeline.raw.timing_ccd_solver();
+    }
+
+    /**
+     * The total time spent in the islands calculation during CCD.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingIslandConstruction(): number {
+        return this.physicsPipeline.raw.timing_island_construction();
+    }
+
+    /**
+     * The total time spent propagating detected user changes.
+     *
+     * Only works if the internal profiler is enabled with `World.profilerEnabled = true`.
+     */
+    public timingUserChanges(): number {
+        return this.physicsPipeline.raw.timing_user_changes();
     }
 }
