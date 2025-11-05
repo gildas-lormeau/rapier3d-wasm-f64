@@ -1,3 +1,7 @@
+## 0.19.3 (05 Nov. 2025)
+
+- Significantly improve performances of `combineVoxelStates`.
+
 ### 0.19.2 (17 Oct. 2025)
 
 - Fix bug where kinematic bodies would not wake up when setting its velocity.

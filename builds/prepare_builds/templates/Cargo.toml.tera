@@ -1,6 +1,6 @@
 [package]
 name = "dimforge_{{ js_package_name }}" # Can't be named rapier{{ dimension }}d which conflicts with the dependency.
-version = "0.19.2"
+version = "0.19.3"
 authors = ["Sébastien Crozet <developer@crozet.re>"]
 description = "{{ dimension }}-dimensional physics engine in Rust - official JS bindings."
 documentation = "https://rapier.rs/rustdoc/rapier{{ dimension }}d/index.html"
@@ -35,6 +35,8 @@ rapier{{ dimension }}d = { version = "0.30.1", features = [
     "{{ feature }}",
     {%- endfor %}
 ] }
+# The explicit dependency to parry only needed to pin the patch version.
+parry{{ dimension }}d = { version = "^0.25.3" }
 ref-cast = "1"
 wasm-bindgen = "0.2.100"
 js-sys = "0.3"
